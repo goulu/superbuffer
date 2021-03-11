@@ -2,6 +2,9 @@
 
 <p align="center">
 A simple way to serialize JavaScript objects into ArrayBuffers for high compression on the wire.
+
+(quick and dirty fork by goulu to trust the Schema instead of inserting id's in the data
+this enables to read/ write binary blobs written by third-party software...)
 </p>
 
 <br>

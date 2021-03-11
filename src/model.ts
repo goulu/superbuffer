@@ -45,16 +45,9 @@ export class Model<T extends Record<string, unknown> = Record<string, unknown>> 
     struct: SchemaDefinition<T>,
     id?: number
   ): Model<T> {
-    return new Model(new Schema<T>(struct, id));
+    return new Model(new Schema<T>(struct));
   }
 
-  /**
-   * Extract the root Model id from the ArrayBuffer.
-   * @param buffer The ArrayBuffer from which to extract the id.
-   */
-  public static getIdFromBuffer(buffer: ArrayBuffer): number {
-    return new Uint8Array(buffer)[1];
-  }
 
   /**
    * Serialize an object or an array of objects defined by this Model's schema into an ArrayBuffer.
@@ -89,12 +82,13 @@ export class Model<T extends Record<string, unknown> = Record<string, unknown>> 
     this._buffer.refresh();
     if (Array.isArray(data)) {
       this._buffer.append(uint8, Model.BUFFER_ARRAY);
-      this._buffer.append(uint8, this.schema.id);
+      // this._buffer.append(uint8, this.schema.id);
       this._buffer.append(uint16, data.length);
       for (let i = 0; i < data.length; i++) {
         this.serialize(data[i], this.schema.struct);
       }
     } else {
+    if (encoding) {
       this._buffer.append(uint8, Model.BUFFER_OBJECT);
       this._buffer.append(uint8, this.schema.id);
       this.serialize(data, this.schema.struct);
@@ -130,26 +124,18 @@ export class Model<T extends Record<string, unknown> = Record<string, unknown>> 
     }
     this._buffer.refresh(buffer);
 
-    // Determine if structure is object or array
-    const bufferType = this._buffer.read(uint8);
-    if (expect && expect !== bufferType) {
-      throw new Error(`Expected buffer type to be ${expect} but got ${bufferType}.`);
-    }
-    if (this._buffer.read(uint8) !== this.schema.id) {
-      throw new Error(`Expected schema id to be ${this.schema.id}`);
+    // trust the schema structure
+    if (Array.isArray(this.schema)) {
+      // Handle array
+      const numElements = this._buffer.read(uint16);
+      const results: SchemaObject<T>[] = [];
+      for (let i = 0; i < numElements; i++) {
+        results.push(this.deserialize(this.schema.struct) as SchemaObject<T>);
+      }
+      return results;
     }
 
-    // Handle object
-    if (bufferType === Model.BUFFER_OBJECT) {
-      return this.deserialize(this.schema.struct) as SchemaObject<T>;
-    }
-    // Handle array
-    const numElements = this._buffer.read(uint16);
-    const results: SchemaObject<T>[] = [];
-    for (let i = 0; i < numElements; i++) {
-      results.push(this.deserialize(this.schema.struct) as SchemaObject<T>);
-    }
-    return results;
+    return this.deserialize(this.schema.struct) as SchemaObject<T>;
   }
 
   /**

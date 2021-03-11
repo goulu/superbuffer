@@ -12,7 +12,7 @@ export class Schema<T extends Record<string, unknown> = Record<string, unknown>>
   /**
    * Id of the schema.
    */
-  public readonly id: number;
+  // public readonly id: number;
   /**
    * Schema definition reference.
    */
@@ -23,19 +23,8 @@ export class Schema<T extends Record<string, unknown> = Record<string, unknown>>
    * @param name Unique name of the Schema.
    * @param struct SchemaDefinition structure of the Schema.
    */
-  public constructor(struct: SchemaDefinition<T>, id: number = Schema.instances.size) {
+  public constructor(struct: SchemaDefinition<T>) {
     this.struct = Schema.definition(struct);
-    this.id = id;
-
-    // Ensure schema with same name does not exist
-    if (Schema.instances.get(id)) {
-      throw new Error(`A Schema with the name "${id}" already exists.`);
-    } else {
-      Schema.instances.set(id, this);
-      if (Schema.instances.size > 255) {
-        throw new Error('The maximum number of Schema instances (255) has been reached.');
-      }
-    }
   }
 
   /**
