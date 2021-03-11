@@ -20,7 +20,7 @@
     "node": ">=4.0.0"
   },
   "scripts": {
-    "build": "rm -rf lib && tsc --project tsconfig.prod.json",
+    "build": "tsc",
     "profile": "node --prof test/_flamegraph.js",
     "test": "jest --collectCoverage",
     "test:one": "jest -t",
@@ -29,6 +29,7 @@
   "devDependencies": {
     "@supersede/eslint-config": "^1.1.2",
     "@supersede/prettier-config": "^1.0.1",
+    "@types/jest": "^26.0.20",
     "eslint": "^7.13.0",
     "jest": "^26.1.0",
     "prettier": "^2.0.5",
