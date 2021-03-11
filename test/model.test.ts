@@ -21,11 +21,6 @@ describe('Model class', () => {
     Schema.instances.clear();
   });
 
-  it('Should read the schema id from an ArrayBuffer', () => {
-    const model = Model.fromSchemaDefinition({id: uint8, x: float32});
-    const buffer = model.toBuffer({id: 12, x: 1.2345});
-    expect(Model.getIdFromBuffer(buffer)).toStrictEqual(model.schema.id);
-  });
 
   it('Should serialize the buffer type at index 0', () => {
     const model = Model.fromSchemaDefinition({id: uint8, x: uint16});
