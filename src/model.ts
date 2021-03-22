@@ -30,9 +30,10 @@ export class Model<T extends Record<string, unknown> = Record<string, unknown>> 
    * Create a new Model instance.
    * @param schema Schema instance that this model is defined by.
    * @param bufferSize The maximum size of serializable data. Default: 1 megabyte.
+   * @param littleEndian The endianness. Default is false
    */
-  public constructor(schema: Schema<T>, bufferSize?: number) {
-    this._buffer = new BufferManager(bufferSize);
+  public constructor(schema: Schema<T>, bufferSize?: number, littleEndian?: boolean) {
+    this._buffer = new BufferManager(bufferSize, littleEndian);
     this.schema = schema;
   }
 
@@ -40,12 +41,14 @@ export class Model<T extends Record<string, unknown> = Record<string, unknown>> 
    * Create a Model directly from the provided schema name and definition.
    * @param name Unique name of the schema.
    * @param struct Structure of the schema.
+   * @param littleEndian The endianness. Default is false
    */
   public static fromSchemaDefinition<T extends Record<string, unknown>>(
     struct: SchemaDefinition<T>,
-    id?: number
+    id?: number,
+    littleEndian?: boolean
   ): Model<T> {
-    return new Model(new Schema<T>(struct));
+    return new Model(new Schema<T>(struct), undefined, littleEndian);
   }
 
 
