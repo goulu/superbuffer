@@ -22,9 +22,10 @@ export class Schema<T extends Record<string, unknown> = Record<string, unknown>>
    * Create a new Schema instance.
    * @param name Unique name of the Schema.
    * @param struct SchemaDefinition structure of the Schema.
+   * @param sort option to sort fields alphabetically. Why ? no idea. But default is true.
    */
-  public constructor(struct: SchemaDefinition<T>) {
-    this.struct = Schema.definition(struct);
+  public constructor(struct: SchemaDefinition<T>, sort: boolean = true) {
+    this.struct = sort ? Schema.definition(struct) : struct;
   }
 
   /**
