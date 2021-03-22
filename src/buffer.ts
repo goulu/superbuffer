@@ -141,7 +141,7 @@ export class BufferManager {
     }
     // Number
     else {
-      result = this._dataView[`get${bufferView.type}` as const](this._offset);
+      result = this._dataView[`get${bufferView.type}` as const](this._offset, this._littleEndian);
       if (bufferView.type === 'Float32' || bufferView.type === 'Float64') {
         result = Number(Number(result).toPrecision(bufferView.type === 'Float32' ? 7 : 16));
       }
