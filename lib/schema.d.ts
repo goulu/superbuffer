@@ -18,8 +18,9 @@ export declare class Schema<T extends Record<string, unknown> = Record<string, u
      * Create a new Schema instance.
      * @param name Unique name of the Schema.
      * @param struct SchemaDefinition structure of the Schema.
+     * @param sort option to sort fields alphabetically. Why ? no idea. But default is true.
      */
-    constructor(struct: SchemaDefinition<T>);
+    constructor(struct: SchemaDefinition<T>, sort?: boolean);
     /**
      * Create a SchemaDefinition without creating a Schema instance.
      * @param obj Object defining the schema.
