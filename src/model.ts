@@ -26,6 +26,8 @@ export class Model<T extends Record<string, unknown> = Record<string, unknown>> 
    */
   protected readonly _buffer: BufferManager;
 
+  public arraySizeEncoding = uint16;
+
   /**
    * Create a new Model instance.
    * @param schema Schema instance that this model is defined by.
@@ -130,7 +132,7 @@ export class Model<T extends Record<string, unknown> = Record<string, unknown>> 
     // trust the schema structure
     if (Array.isArray(this.schema)) {
       // Handle array
-      const numElements = this._buffer.read(uint16);
+      const numElements = this._buffer.read(this.arraySizeEncoding);
       const results: SchemaObject<T>[] = [];
       for (let i = 0; i < numElements; i++) {
         results.push(this.deserialize(this.schema.struct) as SchemaObject<T>);
@@ -161,7 +163,7 @@ export class Model<T extends Record<string, unknown> = Record<string, unknown>> 
       }
       // Array
       else if (Array.isArray(schemaProp)) {
-        this._buffer.append(uint16, dataProp.length);
+        this._buffer.append(this.arraySizeEncoding, dataProp.length);
         const element = schemaProp[0];
         // Schema
         if (element instanceof Schema) {

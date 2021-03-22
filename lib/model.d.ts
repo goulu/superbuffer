@@ -22,6 +22,7 @@ export declare class Model<T extends Record<string, unknown> = Record<string, un
      * Internal BufferManager reference.
      */
     protected readonly _buffer: BufferManager;
+    arraySizeEncoding: import("./types").BufferView<number>;
     /**
      * Create a new Model instance.
      * @param schema Schema instance that this model is defined by.
