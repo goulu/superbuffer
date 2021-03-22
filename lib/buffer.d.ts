@@ -36,11 +36,12 @@ export declare class BufferManager {
      * Get the current byte offset of the buffer.
      */
     get offset(): number;
+    protected _littleEndian: boolean;
     /**
      * Create a new BufferManager instance.
      * @param bufferSize The maximum size of the internal ArrayBuffer.
      */
-    constructor(bufferSize?: number);
+    constructor(bufferSize?: number, littleEndian?: boolean);
     /**
      * Refresh this Model's internal buffer and DataView before toBuffer is called.
      * @param newBuffer Specific ArrayBuffer instance, otherwise a default will be used.

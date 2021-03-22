@@ -26,14 +26,16 @@ export declare class Model<T extends Record<string, unknown> = Record<string, un
      * Create a new Model instance.
      * @param schema Schema instance that this model is defined by.
      * @param bufferSize The maximum size of serializable data. Default: 1 megabyte.
+     * @param littleEndian The endianness. Default is false
      */
-    constructor(schema: Schema<T>, bufferSize?: number);
+    constructor(schema: Schema<T>, bufferSize?: number, littleEndian?: boolean);
     /**
      * Create a Model directly from the provided schema name and definition.
      * @param name Unique name of the schema.
      * @param struct Structure of the schema.
+     * @param littleEndian The endianness. Default is false
      */
-    static fromSchemaDefinition<T extends Record<string, unknown>>(struct: SchemaDefinition<T>, id?: number): Model<T>;
+    static fromSchemaDefinition<T extends Record<string, unknown>>(struct: SchemaDefinition<T>, id?: number, littleEndian?: boolean): Model<T>;
     /**
      * Serialize an object or an array of objects defined by this Model's schema into an ArrayBuffer.
      * @param objectOrArray The object or array of objects to be serialized.

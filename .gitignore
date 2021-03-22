@@ -1,7 +1,6 @@
 # Custom
 .build/
 .local/
-lib/
 
 # Logs
 logs

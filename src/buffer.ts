@@ -41,12 +41,15 @@ export class BufferManager {
     return this._offset;
   }
 
+  protected _littleEndian: boolean;
+
   /**
    * Create a new BufferManager instance.
    * @param bufferSize The maximum size of the internal ArrayBuffer.
    */
-  public constructor(bufferSize?: number) {
+  public constructor(bufferSize?: number, littleEndian?: boolean) {
     this.maxByteSize = bufferSize ?? 1e6;
+    this._littleEndian = littleEndian ?? false;
     this._offset = 0;
     this._buffer = new ArrayBuffer(this.maxByteSize);
     this._dataView = new DataView(this._buffer);
@@ -105,7 +108,7 @@ export class BufferManager {
           break;
         }
       }
-      this._dataView[`set${bufferView.type}` as const](this._offset, data as never);
+      this._dataView[`set${bufferView.type}` as const](this._offset, data as never, this._littleEndian);
     }
     this._offset += bufferView.bytes;
   }
