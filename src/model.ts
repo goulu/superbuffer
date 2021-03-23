@@ -63,7 +63,7 @@ export class Model<T extends Record<string, unknown> = Record<string, unknown>> 
     if (Array.isArray(objectOrArray)) {
       this._buffer.append(uint8, Model.BUFFER_ARRAY);
       // this._buffer.append(uint8, this.schema.id);
-      this._buffer.append(uint16, objectOrArray.length);
+      this._buffer.append(this.arraySizeEncoding, objectOrArray.length);
       for (let i = 0; i < objectOrArray.length; i++) {
         this.serialize(objectOrArray[i], this.schema.struct);
       }
@@ -157,7 +157,7 @@ export class Model<T extends Record<string, unknown> = Record<string, unknown>> 
       }
       // Array definition
       else if (Array.isArray(structValue)) {
-        const numElements = this._buffer.read(uint16);
+        const numElements = this._buffer.read(this.arraySizeEncoding);
         const element = structValue[0];
         const results = [];
         if (element instanceof Schema) {
