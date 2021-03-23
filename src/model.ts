@@ -47,7 +47,7 @@ export class Model<T extends Record<string, unknown> = Record<string, unknown>> 
    */
   public static fromSchemaDefinition<T extends Record<string, unknown>>(
     struct: SchemaDefinition<T>,
-    id?: number,
+    // id?: number,
     littleEndian?: boolean
   ): Model<T> {
     return new Model(new Schema<T>(struct), undefined, littleEndian);
