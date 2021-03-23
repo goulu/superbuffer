@@ -21,6 +21,7 @@ export declare type BufferViewOrSchema = BufferView | [BufferView] | Schema | [S
 export declare type SchemaDefinition<T> = {
     [K in keyof T]: T[K] extends BufferViewOrSchema ? T[K] : T[K] extends Record<string, unknown> ? SchemaDefinition<T[K]> : never;
 };
+export declare type SchemaMap = Map<string, any>;
 /**
  * Extracts the plain object representation of the schema definition.
  */

@@ -53,6 +53,9 @@ export type SchemaDefinition<T> = {
     : never;
 };
 
+export type SchemaMap = Map<string,any>;
+
+
 /**
  * Extracts the plain object representation of the schema definition.
  */
