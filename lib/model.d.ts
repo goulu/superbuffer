@@ -1,6 +1,6 @@
 import { BufferManager } from './buffer';
 import { Schema } from './schema';
-import type { SchemaObject, SchemaDefinition } from './types';
+import type { SchemaObject, SchemaDefinition, SchemaMap } from './types';
 /**
  * The Model class provides an API for serializing and deserializing ArrayBuffers into objects
  * specified by their Schema definitions.
@@ -36,7 +36,7 @@ export declare class Model<T extends Record<string, unknown> = Record<string, un
      * @param struct Structure of the schema.
      * @param littleEndian The endianness. Default is false
      */
-    static fromSchemaDefinition<T extends Record<string, unknown>>(struct: SchemaDefinition<T>, id?: number, littleEndian?: boolean): Model<T>;
+    static fromSchemaDefinition<T extends Record<string, unknown>>(struct: SchemaDefinition<T>, littleEndian?: boolean): Model<T>;
     /**
      * Serialize an object or an array of objects defined by this Model's schema into an ArrayBuffer.
      * @param objectOrArray The object or array of objects to be serialized.
@@ -54,12 +54,12 @@ export declare class Model<T extends Record<string, unknown> = Record<string, un
     /**
      * Serialize data that adheres to the provided object structure.
      * @param data Data to be serialized.
-     * @param struct Object structure in the schema definition.
+     * @param struct SchemaMap structure in the schema definition.
      */
-    protected serialize(data: Record<string, any>, struct: Record<string, any>): void;
+    protected serialize(data: Record<string, any>, struct: SchemaMap): void;
     /**
      * Deserialize data from the ArrayBuffer that adheres to the provided object structure.
      * @param struct Object structure in the schema definition.
      */
-    protected deserialize(struct: Record<string, any>): Record<string, any>;
+    protected deserialize(struct: SchemaMap): Record<string, any>;
 }

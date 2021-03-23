@@ -2,7 +2,7 @@ import {BufferManager} from './buffer';
 import {Schema} from './schema';
 import {uint8, uint16} from './views';
 import {isObject, isBufferView} from './utils';
-import type {SchemaObject, SchemaDefinition} from './types';
+import type {SchemaObject, SchemaDefinition, SchemaMap} from './types';
 
 /**
  * The Model class provides an API for serializing and deserializing ArrayBuffers into objects
@@ -47,7 +47,7 @@ export class Model<T extends Record<string, unknown> = Record<string, unknown>> 
    */
   public static fromSchemaDefinition<T extends Record<string, unknown>>(
     struct: SchemaDefinition<T>,
-    id?: number,
+    // id?: number,
     littleEndian?: boolean
   ): Model<T> {
     return new Model(new Schema<T>(struct), undefined, littleEndian);
@@ -107,13 +107,11 @@ export class Model<T extends Record<string, unknown> = Record<string, unknown>> 
   /**
    * Serialize data that adheres to the provided object structure.
    * @param data Data to be serialized.
-   * @param struct Object structure in the schema definition.
+   * @param struct SchemaMap structure in the schema definition.
    */
-  protected serialize(data: Record<string, any>, struct: Record<string, any>): void {
-    const keys = Object.keys(struct);
-    for (let i = 0; i < keys.length; i++) {
-      const dataProp = data[keys[i]]; // Actual data values
-      const schemaProp = struct[keys[i]]; // Corresponds with values from schema
+  protected serialize(data: Record<string, any>, struct: SchemaMap): void {
+    for (const [key, schemaProp] of struct) {
+      const dataProp = data[key]; // Actual data values
       // BufferView
       if (isBufferView(schemaProp)) {
         this._buffer.append(schemaProp, dataProp);
@@ -141,7 +139,7 @@ export class Model<T extends Record<string, unknown> = Record<string, unknown>> 
       }
       // Object
       else if (isObject(schemaProp)) {
-        this.serialize(dataProp, schemaProp);
+        this.serialize(dataProp, Schema.definition(schemaProp));
       }
     }
   }
@@ -150,14 +148,12 @@ export class Model<T extends Record<string, unknown> = Record<string, unknown>> 
    * Deserialize data from the ArrayBuffer that adheres to the provided object structure.
    * @param struct Object structure in the schema definition.
    */
-  protected deserialize(struct: Record<string, any>): Record<string, any> {
+  protected deserialize(struct: SchemaMap): Record<string, any> {
     const data: Record<string, any> = {};
-    const keys = Object.keys(struct);
-    for (let i = 0; i < keys.length; i++) {
-      const structValue = struct[keys[i]];
+    for (const [key, structValue] of struct) {
       // BufferView definition
       if (isBufferView(structValue)) {
-        data[keys[i]] = this._buffer.read(structValue);
+        data[key] = this._buffer.read(structValue);
       }
       // Array definition
       else if (Array.isArray(structValue)) {
@@ -173,11 +169,11 @@ export class Model<T extends Record<string, unknown> = Record<string, unknown>> 
             results.push(this._buffer.read(element));
           }
         }
-        data[keys[i]] = results;
+        data[key] = results;
       }
       // Schema or object definition
       else {
-        data[keys[i]] = this.deserialize(
+        data[key] = this.deserialize(
           structValue instanceof Schema ? structValue.struct : structValue
         );
       }
