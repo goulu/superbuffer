@@ -1,4 +1,4 @@
-import {BufferViewOrSchema, SchemaDefinition} from './types';
+import {BufferViewOrSchema, SchemaDefinition, SchemaMap} from './types';
 import {isObject, isBufferView} from './utils';
 
 /**
@@ -16,23 +16,22 @@ export class Schema<T extends Record<string, unknown> = Record<string, unknown>>
   /**
    * Schema definition reference.
    */
-  public readonly struct: SchemaDefinition<Readonly<T>>;
+  public readonly struct: SchemaMap;
 
   /**
    * Create a new Schema instance.
    * @param name Unique name of the Schema.
    * @param struct SchemaDefinition structure of the Schema.
-   * @param sort option to sort fields alphabetically. Why ? no idea. But default is true.
    */
-  public constructor(struct: SchemaDefinition<T>, sort: boolean = true) {
-    this.struct = sort ? Schema.definition(struct) : struct;
+  public constructor(struct: SchemaDefinition<T> | SchemaMap) {
+    this.struct = (struct instanceof Map) ? struct : Schema.definition(struct);
   }
 
   /**
    * Create a SchemaDefinition without creating a Schema instance.
    * @param obj Object defining the schema.
    */
-  public static definition<T>(obj: SchemaDefinition<T>): SchemaDefinition<Readonly<T>> {
+  public static definition<T>(obj: SchemaDefinition<T>): SchemaMap {
     return this.sortStruct(obj);
   }
 
@@ -40,7 +39,7 @@ export class Schema<T extends Record<string, unknown> = Record<string, unknown>>
    * Sort and validate the structure of the SchemaDefinition.
    * @param struct The SchemaDefinition structure to be sorted.
    */
-  protected static sortStruct<T extends Record<string, any>>(struct: T): T {
+  protected static sortStruct<T extends Record<string, any>>(struct: T): SchemaMap {
     const keys = Object.keys(struct);
     if (keys.length <= 1) {
       // sort() does not run if there is only 1 array element, ensure that element is validated
@@ -61,19 +60,19 @@ export class Schema<T extends Record<string, unknown> = Record<string, unknown>>
       }
     });
 
-    const sortedStruct: Record<string, any> = {};
+    const sortedStruct = new Map();
     for (const key of sortedKeys) {
       const value = struct[key];
       // Object
       if (isObject(value) && !isBufferView(value)) {
-        sortedStruct[key] = this.sortStruct(value);
+        sortedStruct.set(key, this.sortStruct(value));
       }
       // Schema, BufferView, Array
       else {
-        sortedStruct[key] = value;
+        sortedStruct.set(key, value);
       }
     }
-    return sortedStruct as T;
+    return sortedStruct;
   }
 
   /**

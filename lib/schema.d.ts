@@ -1,4 +1,4 @@
-import { BufferViewOrSchema, SchemaDefinition } from './types';
+import { BufferViewOrSchema, SchemaDefinition, SchemaMap } from './types';
 /**
  * The Schema class provides an API for creating definitions.
  */
@@ -13,24 +13,23 @@ export declare class Schema<T extends Record<string, unknown> = Record<string, u
     /**
      * Schema definition reference.
      */
-    readonly struct: SchemaDefinition<Readonly<T>>;
+    readonly struct: SchemaMap;
     /**
      * Create a new Schema instance.
      * @param name Unique name of the Schema.
      * @param struct SchemaDefinition structure of the Schema.
-     * @param sort option to sort fields alphabetically. Why ? no idea. But default is true.
      */
-    constructor(struct: SchemaDefinition<T>, sort?: boolean);
+    constructor(struct: SchemaDefinition<T> | SchemaMap);
     /**
      * Create a SchemaDefinition without creating a Schema instance.
      * @param obj Object defining the schema.
      */
-    static definition<T>(obj: SchemaDefinition<T>): SchemaDefinition<Readonly<T>>;
+    static definition<T>(obj: SchemaDefinition<T>): SchemaMap;
     /**
      * Sort and validate the structure of the SchemaDefinition.
      * @param struct The SchemaDefinition structure to be sorted.
      */
-    protected static sortStruct<T extends Record<string, any>>(struct: T): T;
+    protected static sortStruct<T extends Record<string, any>>(struct: T): SchemaMap;
     /**
      * Returns the priority index of the entity based on its type, in order:
      * `BufferView<number>`, `BufferView<number>[]`, `BufferView<string>`, `BufferView<string>[]`,
