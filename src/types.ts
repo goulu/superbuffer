@@ -28,12 +28,12 @@ export type Serializable = string | number | bigint | boolean;
  */
 export type BufferView<T extends Serializable = Serializable> = {
   readonly type: T extends string
-    ? 'String'
-    : T extends boolean
-    ? 'Boolean'
-    : T extends number
-    ? 'Uint8' | 'Uint16' | 'Uint32' | 'Int8' | 'Int16' | 'Int32' | 'Float32' | 'Float64'
-    : 'BigInt64' | 'BigUint64';
+  ? 'String'
+  : T extends boolean
+  ? 'Boolean'
+  : T extends number
+  ? 'Uint8' | 'Uint16' | 'Uint32' | 'Int8' | 'Int16' | 'Int32' | 'Float32' | 'Float64'
+  : 'BigInt64' | 'BigUint64';
   readonly bytes: number;
 };
 
@@ -47,13 +47,13 @@ export type BufferViewOrSchema = BufferView | [BufferView] | Schema | [Schema];
  */
 export type SchemaDefinition<T> = {
   [K in keyof T]: T[K] extends BufferViewOrSchema
-    ? T[K]
-    : T[K] extends Record<string, unknown>
-    ? SchemaDefinition<T[K]>
-    : never;
+  ? T[K]
+  : T[K] extends Record<string, unknown>
+  ? SchemaDefinition<T[K]>
+  : never;
 };
 
-export type SchemaMap = Map<string,any>;
+export type SchemaMap = Map<string, any>;
 
 
 /**
@@ -61,16 +61,18 @@ export type SchemaMap = Map<string,any>;
  */
 export type SchemaObject<T> = {
   [K in keyof T]: T[K] extends BufferView<infer U>
-    ? U
-    : T[K] extends BufferView<infer U>[]
-    ? U[]
-    : T[K] extends Schema<infer U>
-    ? SchemaObject<U>
-    : T[K] extends Schema<infer U>[]
-    ? SchemaObject<U>[]
-    : T[K] extends Record<string, unknown>
-    ? SchemaObject<T[K]>
-    : never;
+  ? U
+  : T[K] extends BufferView<infer U>[]
+  ? U[]
+  : T[K] extends Schema<infer U>
+  ? SchemaObject<U>
+  : T[K] extends Schema<infer U>[]
+  ? SchemaObject<U>[]
+  : T[K] extends Record<string, unknown>
+  ? SchemaObject<T[K]>
+  : T[K] extends Map<string, unknown>
+  ? SchemaObject<T[K]>
+  : never;
 };
 
 export type SchemaData<T> = SchemaObject<T> | SchemaObject<T>[];

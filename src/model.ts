@@ -9,14 +9,7 @@ import {uint16, uint8} from './views';
  * specified by their Schema definitions.
  */
 export class Model<T extends Record<string, unknown> = Record<string, unknown>> {
-  /**
-   * Unique identifier denoting the buffer's structure is an array of flattened hashmaps.
-   */
-  public static readonly BUFFER_ARRAY = 0;
-  /**
-   * Unique identifier denoting the buffer's structure is a flattened hashmap.
-   */
-  public static readonly BUFFER_OBJECT = 1;
+  
   /**
    * Schema definition reference.
    */
@@ -86,7 +79,7 @@ export class Model<T extends Record<string, unknown> = Record<string, unknown>> 
     | BigUint64Array {
     this._buffer.refresh();
     if (Array.isArray(data)) {
-      this._buffer.append(uint8, Model.BUFFER_ARRAY);
+      // this._buffer.append(uint8, Model.BUFFER_ARRAY);
       // this._buffer.append(uint8, this.schema.id);
       this._buffer.append(this.arraySizeEncoding, data.length);
       for (let i = 0; i < data.length; i++) {
@@ -94,7 +87,7 @@ export class Model<T extends Record<string, unknown> = Record<string, unknown>> 
       }
     } else {
     if (encoding) {
-      this._buffer.append(uint8, Model.BUFFER_OBJECT);
+      // this._buffer.append(uint8, Model.BUFFER_OBJECT);
       this._buffer.append(uint8, this.schema.id);
       this.serialize(data, this.schema.struct);
     }

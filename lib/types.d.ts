@@ -26,7 +26,7 @@ export declare type SchemaMap = Map<string, any>;
  * Extracts the plain object representation of the schema definition.
  */
 export declare type SchemaObject<T> = {
-    [K in keyof T]: T[K] extends BufferView<infer U> ? U : T[K] extends BufferView<infer U>[] ? U[] : T[K] extends Schema<infer U> ? SchemaObject<U> : T[K] extends Schema<infer U>[] ? SchemaObject<U>[] : T[K] extends Record<string, unknown> ? SchemaObject<T[K]> : never;
+    [K in keyof T]: T[K] extends BufferView<infer U> ? U : T[K] extends BufferView<infer U>[] ? U[] : T[K] extends Schema<infer U> ? SchemaObject<U> : T[K] extends Schema<infer U>[] ? SchemaObject<U>[] : T[K] extends Record<string, unknown> ? SchemaObject<T[K]> : T[K] extends Map<string, unknown> ? SchemaObject<T[K]> : never;
 };
 /**
  * Extract the SchemaDefinition type from a Model.

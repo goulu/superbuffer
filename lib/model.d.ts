@@ -7,14 +7,6 @@ import type { SchemaObject, SchemaDefinition, SchemaMap } from './types';
  */
 export declare class Model<T extends Record<string, unknown> = Record<string, unknown>> {
     /**
-     * Unique identifier denoting the buffer's structure is an array of flattened hashmaps.
-     */
-    static readonly BUFFER_ARRAY = 0;
-    /**
-     * Unique identifier denoting the buffer's structure is a flattened hashmap.
-     */
-    static readonly BUFFER_OBJECT = 1;
-    /**
      * Schema definition reference.
      */
     readonly schema: Schema<T>;
@@ -49,8 +41,6 @@ export declare class Model<T extends Record<string, unknown> = Record<string, un
      * @param expect The expected buffer type (i.e. `Model.BUFFER_OBJECT) for deserialization.
      */
     fromBuffer(buffer: ArrayBuffer): SchemaObject<T> | SchemaObject<T>[];
-    fromBuffer(buffer: ArrayBuffer, expect: typeof Model.BUFFER_OBJECT): SchemaObject<T>;
-    fromBuffer(buffer: ArrayBuffer, expect: typeof Model.BUFFER_ARRAY): SchemaObject<T>[];
     /**
      * Serialize data that adheres to the provided object structure.
      * @param data Data to be serialized.
