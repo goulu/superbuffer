@@ -1,6 +1,6 @@
 import {BufferManager} from './buffer';
 import {Schema} from './schema';
-import {uint8, uint16} from './views';
+import {uint16} from './views';
 import {isObject, isBufferView} from './utils';
 import type {SchemaObject, SchemaDefinition, SchemaMap} from './types';
 
@@ -9,14 +9,7 @@ import type {SchemaObject, SchemaDefinition, SchemaMap} from './types';
  * specified by their Schema definitions.
  */
 export class Model<T extends Record<string, unknown> = Record<string, unknown>> {
-  /**
-   * Unique identifier denoting the buffer's structure is an array of flattened hashmaps.
-   */
-  public static readonly BUFFER_ARRAY = 0;
-  /**
-   * Unique identifier denoting the buffer's structure is a flattened hashmap.
-   */
-  public static readonly BUFFER_OBJECT = 1;
+  
   /**
    * Schema definition reference.
    */
@@ -61,14 +54,14 @@ export class Model<T extends Record<string, unknown> = Record<string, unknown>> 
   public toBuffer(objectOrArray: SchemaObject<T> | SchemaObject<T>[]): ArrayBuffer {
     this._buffer.refresh();
     if (Array.isArray(objectOrArray)) {
-      this._buffer.append(uint8, Model.BUFFER_ARRAY);
+      // this._buffer.append(uint8, Model.BUFFER_ARRAY);
       // this._buffer.append(uint8, this.schema.id);
       this._buffer.append(this.arraySizeEncoding, objectOrArray.length);
       for (let i = 0; i < objectOrArray.length; i++) {
         this.serialize(objectOrArray[i], this.schema.struct);
       }
     } else {
-      this._buffer.append(uint8, Model.BUFFER_OBJECT);
+      // this._buffer.append(uint8, Model.BUFFER_OBJECT);
       // this._buffer.append(uint8, this.schema.id);
       this.serialize(objectOrArray, this.schema.struct);
     }
@@ -81,10 +74,8 @@ export class Model<T extends Record<string, unknown> = Record<string, unknown>> 
    * @param buffer The ArrayBuffer to be deserialized.
    * @param expect The expected buffer type (i.e. `Model.BUFFER_OBJECT) for deserialization.
    */
-  public fromBuffer(buffer: ArrayBuffer): SchemaObject<T> | SchemaObject<T>[];
-  public fromBuffer(buffer: ArrayBuffer, expect: typeof Model.BUFFER_OBJECT): SchemaObject<T>;
-  public fromBuffer(buffer: ArrayBuffer, expect: typeof Model.BUFFER_ARRAY): SchemaObject<T>[];
-  public fromBuffer(buffer: ArrayBuffer, expect?: number): SchemaObject<T> | SchemaObject<T>[] {
+  public fromBuffer(buffer: ArrayBuffer): SchemaObject<T> | SchemaObject<T>[] {
+
     if (buffer.byteLength > this._buffer.maxByteSize) {
       throw new Error('Buffer exceeds max allocation size.');
     }
