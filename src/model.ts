@@ -1,7 +1,7 @@
 import {BufferManager} from './buffer';
 import {Schema} from './schema';
 import type {SchemaMap, SchemaData, SchemaDefinition, SchemaObject, TypedArrayName} from './types';
-import {getTypedArrayByName, isBufferView, isObject} from './utils';
+import {getTypedArrayByName, isBufferView} from './utils';
 import {uint16} from './views';
 
 /**
@@ -102,9 +102,7 @@ export class Model<T extends Record<string, unknown> = Record<string, unknown>> 
    * @param buffer The ArrayBuffer to be deserialized.
    */
 
-  public fromBuffer(
-    buffer: ArrayBuffer | ArrayBufferView
-  ): SchemaObject<T> | SchemaObject<T>[] | SchemaData<T> {
+  public fromBuffer(buffer: ArrayBuffer | ArrayBufferView): SchemaData<T> {
     if (ArrayBuffer.isView(buffer)) {
       buffer = buffer.buffer; // Access internal ArrayBuffer of ArrayBufferView
     }
@@ -160,9 +158,9 @@ export class Model<T extends Record<string, unknown> = Record<string, unknown>> 
           }
         }
       }
-      // Object
-      else if (isObject(schemaProp)) {
-        this.serialize(dataProp, Schema.definition(schemaProp));
+      // Object : if (isObject(schemaProp))
+      else {
+        this.serialize(dataProp, schemaProp);
       }
     }
   }

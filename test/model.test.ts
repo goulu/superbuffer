@@ -105,7 +105,7 @@ describe('Model class', () => {
     const model = Model.fromSchemaDefinition({x: uint64, y: uint64});
     const object = {x: BigInt(0), y: BigInt(2 ** 64) - BigInt(1)};
     const buffer = model.toBuffer(object);
-    const result = model.fromBuffer(buffer, Model.BUFFER_OBJECT);
+    const result = model.fromBuffer(buffer);
     expect(result.x.toString()).toStrictEqual(object.x.toString());
     expect(result.y.toString()).toStrictEqual(object.y.toString());
   });
@@ -114,7 +114,7 @@ describe('Model class', () => {
     const model = Model.fromSchemaDefinition({x: int64, y: int64});
     const object = {x: BigInt(-(2 ** 63)), y: BigInt(2 ** 63) - BigInt(1)};
     const buffer = model.toBuffer(object);
-    const result = model.fromBuffer(buffer, Model.BUFFER_OBJECT);
+    const result = model.fromBuffer(buffer);
     expect(result.x.toString()).toStrictEqual(object.x.toString());
     expect(result.y.toString()).toStrictEqual(object.y.toString());
   });
@@ -123,7 +123,7 @@ describe('Model class', () => {
     const model = Model.fromSchemaDefinition({x: string, y: string});
     const object = {x: 'this is some string', y: 'this is another string'};
     const buffer = model.toBuffer(object);
-    const result = model.fromBuffer(buffer, Model.BUFFER_OBJECT);
+    const result = model.fromBuffer(buffer);
     expect(result).toStrictEqual(object);
   });
 
@@ -131,7 +131,7 @@ describe('Model class', () => {
     const model = Model.fromSchemaDefinition({x: boolean, y: boolean});
     const object = {x: true, y: false};
     const buffer = model.toBuffer(object);
-    const result = model.fromBuffer(buffer, Model.BUFFER_OBJECT);
+    const result = model.fromBuffer(buffer);
     expect(result).toStrictEqual(object);
   });
 
@@ -149,7 +149,7 @@ describe('Model class', () => {
       x: [-1, -2, -3, -2e3, 0, 1, 2, 3, 9821],
     };
     const buffer = model.toBuffer(object);
-    const {a, ...rest} = model.fromBuffer(buffer, Model.BUFFER_OBJECT);
+    const {a, ...rest} = model.fromBuffer(buffer);
     expect(a[0].toString()).toStrictEqual(a[0].toString()); // Workaround for Jest bigint issue
     expect(a[1].toString()).toStrictEqual(a[1].toString());
     expect(rest).toStrictEqual({
@@ -283,12 +283,12 @@ describe('Model class', () => {
       },
     };
     const buffer = model.toBuffer([object, object, object, object]);
-    const results = model.fromBuffer(buffer, Model.BUFFER_ARRAY);
+    const results = model.fromBuffer(buffer);
     expect(results.length).toStrictEqual(4);
     for (const result of results) {
       expect(result).toStrictEqual(object);
     }
-    expect(() => model.fromBuffer(buffer, Model.BUFFER_OBJECT)).toThrow();
+    expect(() => model.fromBuffer(buffer)).toThrow();
     expect(() => {
       const nestedModal = new Model(nested2);
       nestedModal.fromBuffer(buffer);

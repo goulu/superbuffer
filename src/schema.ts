@@ -24,7 +24,7 @@ export class Schema<T extends Record<string, unknown> = Record<string, unknown>>
    * @param struct SchemaDefinition structure of the Schema.
    */
   public constructor(struct: SchemaDefinition<T> | SchemaMap) {
-    this.struct = (struct instanceof Map) ? struct : Schema.definition(struct);
+    this.struct = struct instanceof Map ? struct : Schema.definition(struct);
   }
 
   /**
@@ -32,47 +32,53 @@ export class Schema<T extends Record<string, unknown> = Record<string, unknown>>
    * @param obj Object defining the schema.
    */
   public static definition<T>(obj: SchemaDefinition<T>): SchemaMap {
-    return this.sortStruct(obj);
+    return this.getStruct(obj, false); // do not sort
   }
 
   /**
    * Sort and validate the structure of the SchemaDefinition.
    * @param struct The SchemaDefinition structure to be sorted.
+   * @paaram sort if fields must be sorted (legacy DanielHZhang)
    */
-  protected static sortStruct<T extends Record<string, any>>(struct: T): SchemaMap {
-    const keys = Object.keys(struct);
-    if (keys.length <= 1) {
-      // sort() does not run if there is only 1 array element, ensure that element is validated
-      this.getSortPriority(struct[keys[0]]);
+  protected static getStruct<T extends Record<string, any>>(
+    struct: T,
+    sort: boolean = false
+  ): SchemaMap {
+    let keys = Object.keys(struct);
+    if (sort) {
+      if (keys.length <= 1) {
+        // sort() does not run if there is only 1 array element, ensure that element is validated
+        this.getSortPriority(struct[keys[0]]);
+      }
+      // Find the type of each property of the struct
+      keys = keys.sort((a, b) => {
+        const indexA = this.getSortPriority(struct[a]);
+        const indexB = this.getSortPriority(struct[b]);
+
+        // Same type, sort alphabetically by key
+        if (indexA === indexB) {
+          return a < b ? -1 : 1;
+        }
+        // Different type, sort by returned index
+        else {
+          return indexA < indexB ? -1 : 1;
+        }
+      });
     }
-    // Find the type of each property of the struct
-    const sortedKeys = keys.sort((a, b) => {
-      const indexA = this.getSortPriority(struct[a]);
-      const indexB = this.getSortPriority(struct[b]);
 
-      // Same type, sort alphabetically by key
-      if (indexA === indexB) {
-        return a < b ? -1 : 1;
-      }
-      // Different type, sort by returned index
-      else {
-        return indexA < indexB ? -1 : 1;
-      }
-    });
-
-    const sortedStruct = new Map();
-    for (const key of sortedKeys) {
+    const res = new Map();
+    for (const key of keys) {
       const value = struct[key];
       // Object
       if (isObject(value) && !isBufferView(value)) {
-        sortedStruct.set(key, this.sortStruct(value));
+        res.set(key, this.getStruct(value,sort));
       }
       // Schema, BufferView, Array
       else {
-        sortedStruct.set(key, value);
+        res.set(key, value);
       }
     }
-    return sortedStruct;
+    return res;
   }
 
   /**
