@@ -87,7 +87,7 @@ describe('Benchmark', () => {
           },
           e: uint64,
         },
-        i
+        // i
       );
       const perfEnd = performance.now();
       deltas.push(perfEnd - perfStart);
