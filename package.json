@@ -20,7 +20,7 @@
     "node": ">=4.0.0"
   },
   "scripts": {
-    "build": "rm -rf lib && tsc --project tsconfig.prod.json",
+    "build": "tsc",
     "profile": "node --prof test/_flamegraph.js",
     "test": "jest --collectCoverage",
     "test:one": "jest -t",

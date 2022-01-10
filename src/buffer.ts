@@ -99,7 +99,7 @@ export class BufferManager {
         const precision = type === 'Float32' ? 7 : 16;
         data = Number(Number(data).toPrecision(precision));
       }
-      this._dataView[`set${type}` as const](this._offset, data as never, this._littleEndian););
+      this._dataView[`set${type}` as const](this._offset, data as never, this._littleEndian);
     }
     this._offset += bufferView.bytes;
   }
