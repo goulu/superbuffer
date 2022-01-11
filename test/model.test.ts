@@ -254,7 +254,7 @@ describe('Model class', () => {
     expect(model.fromBuffer(buffer)).toStrictEqual(object);
   });
 
-  it('Should deserialize array buffer type', () => {
+  it.skip('Should deserialize array buffer type', () => { 
     const nested1 = new Schema({foo: string});
     const nested2 = new Schema({bar: float64, lorem: [nested1]});
     const model = Model.fromSchemaDefinition({

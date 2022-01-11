@@ -28,8 +28,9 @@ export declare class Schema<T extends Record<string, unknown> = Record<string, u
     /**
      * Sort and validate the structure of the SchemaDefinition.
      * @param struct The SchemaDefinition structure to be sorted.
+     * @paaram sort if fields must be sorted (legacy DanielHZhang)
      */
-    protected static sortStruct<T extends Record<string, any>>(struct: T): SchemaMap;
+    protected static getStruct<T extends Record<string, any>>(struct: T, sort?: boolean): SchemaMap;
     /**
      * Returns the priority index of the entity based on its type, in order:
      * `BufferView<number>`, `BufferView<number>[]`, `BufferView<string>`, `BufferView<string>[]`,
